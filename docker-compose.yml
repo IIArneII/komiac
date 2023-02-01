@@ -1,0 +1,26 @@
+version: "3.6"
+
+services:
+  postgres:
+    image: postgres:12-alpine
+    container_name: komiac-postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${KOMIAC_DB_PASS}
+      POSTGRES_USER: ${KOMIAC_DB_USER}
+      POSTGRES_DB: ${KOMIAC_DB_NAME}
+    ports:
+      - "127.0.0.1:${KOMIAC_DB_PORT}:5432"
+    volumes:
+      - ./postgresql-data:/var/lib/postgresql/data
+
+  pgadmin:
+    container_name: komiac-pgadmin
+    image: dpage/pgadmin4:4
+    restart: always
+    privileged: true
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@nlt.net
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - ${PGADMIN_PORT}:80

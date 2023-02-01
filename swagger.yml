@@ -1,0 +1,83 @@
+swagger: "2.0"
+
+info:
+  description: "microservice for komiac"
+  title: komiac
+  version: 1.0.0
+
+basePath: /v1
+
+consumes:
+  - application/json
+
+produces:
+  - application/json
+
+schemes:
+  - http
+
+definitions:
+  error:
+    type: object
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  customer:
+    type: object
+    properties:
+      OID:
+        type: string
+  department:
+    type: object
+    properties:
+      OID:
+        type: string
+  application:
+    type: object
+    properties:
+      customer:
+        $ref: "#/definitions/customer"
+      department:
+        $ref: "#/definitions/department"
+      mnemocode:
+        type: string
+      medicaments:
+        type: array
+        items: 
+          $ref: "#/definitions/medicament"
+  medicament:
+    type: object
+    properties:
+      SMNN:
+        type: string
+      MNN:
+        type: string
+      form:
+        type: string
+      dosage:
+        type: string
+      consumerUnit:
+        type: string
+
+paths:
+  /healthCheck:
+    get:
+      operationId: healthCheck
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              ok:
+                type: boolean
+  #/application:
+  #  get:
+
+  #  put:
+
+  #  delete:
+      
+  #  post:
