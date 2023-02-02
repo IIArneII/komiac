@@ -4,15 +4,12 @@ import (
 	"github.com/powerman/sqlxx"
 )
 
-type storage struct {
+type Storage struct {
 	db *sqlxx.DB
 }
 
-type Storage interface {
-}
-
-func NewRepo(db *sqlxx.DB) Storage {
-	return storage{
+func NewStorage(db *sqlxx.DB) *Storage {
+	return &Storage{
 		db: db,
 	}
 }

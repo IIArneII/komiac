@@ -15,10 +15,14 @@ type Config struct {
 }
 
 type service struct {
-	App *app.App
+	app *app.App
 }
 
-func NewServer(app app.App, cfg Config) (*restapi.Server, error) {
+func NewServer(app *app.App, cfg Config) (*restapi.Server, error) {
+	service := &service{
+		app: app,
+	}
+
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to load embedded swagger spec")
@@ -26,7 +30,7 @@ func NewServer(app app.App, cfg Config) (*restapi.Server, error) {
 
 	api := operations.NewKomiacAPI(swaggerSpec)
 
-	api.HealthCheckHandler = operations.HealthCheckHandlerFunc(healthCheck)
+	api.HealthCheckHandler = operations.HealthCheckHandlerFunc(service.healthCheck)
 
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
@@ -35,6 +39,6 @@ func NewServer(app app.App, cfg Config) (*restapi.Server, error) {
 	return server, nil
 }
 
-func healthCheck(params operations.HealthCheckParams) operations.HealthCheckResponder {
+func (svc *service) healthCheck(params operations.HealthCheckParams) operations.HealthCheckResponder {
 	return operations.NewHealthCheckOK().WithPayload(&operations.HealthCheckOKBody{Ok: true})
 }

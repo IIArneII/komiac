@@ -38,7 +38,7 @@ func init() {
 	cfg.gooseDir = def.GooseDir
 }
 
-func RunServer(errc chan<- error, app app.App, cfg api.Config) {
+func RunServer(errc chan<- error, app *app.App, cfg api.Config) {
 	log.Info("Server started")
 	defer log.Info("Server finished")
 
@@ -93,7 +93,7 @@ func main() {
 		return
 	}
 
-	repo := dal.NewRepo(db)
+	repo := dal.NewStorage(db)
 
 	app := app.NewApp(repo)
 
