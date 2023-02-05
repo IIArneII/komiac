@@ -10,9 +10,10 @@ import (
 	"github.com/go-openapi/runtime"
 
 	"komiac/internal/api/restapi/restapi/operations"
+	"komiac/internal/api/restapi/restapi/operations/application"
 )
 
-//go:generate swagger generate server --target ../../restapi --name Komiac --spec ../../swagger.yml --principal interface{} --exclude-main --strict-responders
+//go:generate swagger generate server --target ../../restapi --name Komiac --spec ../../../../swagger.yml --principal interface{} --exclude-main --strict-responders
 
 func configureFlags(api *operations.KomiacAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
@@ -36,9 +37,19 @@ func configureAPI(api *operations.KomiacAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	if api.HealthCheckHandler == nil {
-		api.HealthCheckHandler = operations.HealthCheckHandlerFunc(func(params operations.HealthCheckParams) operations.HealthCheckResponder {
-			return operations.HealthCheckNotImplemented()
+	if api.ApplicationAddListHandler == nil {
+		api.ApplicationAddListHandler = application.AddListHandlerFunc(func(params application.AddListParams) application.AddListResponder {
+			return application.AddListNotImplemented()
+		})
+	}
+	if api.ApplicationDeleteHandler == nil {
+		api.ApplicationDeleteHandler = application.DeleteHandlerFunc(func(params application.DeleteParams) application.DeleteResponder {
+			return application.DeleteNotImplemented()
+		})
+	}
+	if api.ApplicationGetListHandler == nil {
+		api.ApplicationGetListHandler = application.GetListHandlerFunc(func(params application.GetListParams) application.GetListResponder {
+			return application.GetListNotImplemented()
 		})
 	}
 

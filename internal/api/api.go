@@ -19,9 +19,9 @@ type service struct {
 }
 
 func NewServer(app *app.App, cfg Config) (*restapi.Server, error) {
-	service := &service{
-		app: app,
-	}
+	//service := &service{
+	//	app: app,
+	//}
 
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
 	if err != nil {
@@ -30,15 +30,11 @@ func NewServer(app *app.App, cfg Config) (*restapi.Server, error) {
 
 	api := operations.NewKomiacAPI(swaggerSpec)
 
-	api.HealthCheckHandler = operations.HealthCheckHandlerFunc(service.healthCheck)
+	//api.ApplicationAddListHandler = operations.
 
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host
 	server.Port = cfg.Port
 
 	return server, nil
-}
-
-func (svc *service) healthCheck(params operations.HealthCheckParams) operations.HealthCheckResponder {
-	return operations.NewHealthCheckOK().WithPayload(&operations.HealthCheckOKBody{Ok: true})
 }

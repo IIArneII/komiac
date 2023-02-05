@@ -31,23 +31,107 @@ func init() {
   "info": {
     "description": "microservice for komiac",
     "title": "komiac",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "basePath": "/v1",
   "paths": {
-    "/healthCheck": {
+    "/application": {
       "get": {
-        "operationId": "healthCheck",
+        "description": "Get applications by filters",
+        "tags": [
+          "Application"
+        ],
+        "operationId": "getList",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "divisionOID",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "name": "year",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "name": "MNN",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Success",
             "schema": {
-              "type": "object",
-              "properties": {
-                "ok": {
-                  "type": "boolean"
-                }
-              }
+              "$ref": "#/definitions/applications"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Add new and update existing applications",
+        "tags": [
+          "Application"
+        ],
+        "operationId": "addList",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/applications"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/application/{uuid}": {
+      "delete": {
+        "description": "Delete application",
+        "tags": [
+          "Application"
+        ],
+        "operationId": "delete",
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "name": "uuid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/error"
             }
           }
         }
@@ -57,38 +141,64 @@ func init() {
   "definitions": {
     "application": {
       "type": "object",
+      "required": [
+        "UUID",
+        "medicalOrganizationOID",
+        "divisionOID",
+        "year",
+        "SMNN",
+        "MNN",
+        "form",
+        "dosage",
+        "consumerUnit",
+        "itemUnit",
+        "preferentialDirectionCode",
+        "preferentialDirection"
+      ],
       "properties": {
-        "customer": {
-          "$ref": "#/definitions/customer"
-        },
-        "department": {
-          "$ref": "#/definitions/department"
-        },
-        "medicaments": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/medicament"
-          }
-        },
-        "mnemocode": {
+        "MNN": {
           "type": "string"
+        },
+        "SMNN": {
+          "type": "string"
+        },
+        "UUID": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "consumerUnit": {
+          "type": "string"
+        },
+        "divisionOID": {
+          "type": "string"
+        },
+        "dosage": {
+          "type": "string"
+        },
+        "form": {
+          "type": "string"
+        },
+        "itemUnit": {
+          "type": "string"
+        },
+        "medicalOrganizationOID": {
+          "type": "string"
+        },
+        "preferentialDirection": {
+          "type": "string"
+        },
+        "preferentialDirectionCode": {
+          "type": "string"
+        },
+        "year": {
+          "type": "integer"
         }
       }
     },
-    "customer": {
-      "type": "object",
-      "properties": {
-        "OID": {
-          "type": "string"
-        }
-      }
-    },
-    "department": {
-      "type": "object",
-      "properties": {
-        "OID": {
-          "type": "string"
-        }
+    "applications": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/application"
       }
     },
     "error": {
@@ -98,26 +208,6 @@ func init() {
       ],
       "properties": {
         "message": {
-          "type": "string"
-        }
-      }
-    },
-    "medicament": {
-      "type": "object",
-      "properties": {
-        "MNN": {
-          "type": "string"
-        },
-        "SMNN": {
-          "type": "string"
-        },
-        "consumerUnit": {
-          "type": "string"
-        },
-        "dosage": {
-          "type": "string"
-        },
-        "form": {
           "type": "string"
         }
       }
@@ -138,23 +228,107 @@ func init() {
   "info": {
     "description": "microservice for komiac",
     "title": "komiac",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "basePath": "/v1",
   "paths": {
-    "/healthCheck": {
+    "/application": {
       "get": {
-        "operationId": "healthCheck",
+        "description": "Get applications by filters",
+        "tags": [
+          "Application"
+        ],
+        "operationId": "getList",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "divisionOID",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "name": "year",
+            "in": "query"
+          },
+          {
+            "type": "string",
+            "name": "MNN",
+            "in": "query"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Success",
             "schema": {
-              "type": "object",
-              "properties": {
-                "ok": {
-                  "type": "boolean"
-                }
-              }
+              "$ref": "#/definitions/applications"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Add new and update existing applications",
+        "tags": [
+          "Application"
+        ],
+        "operationId": "addList",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/applications"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          }
+        }
+      }
+    },
+    "/application/{uuid}": {
+      "delete": {
+        "description": "Delete application",
+        "tags": [
+          "Application"
+        ],
+        "operationId": "delete",
+        "parameters": [
+          {
+            "type": "string",
+            "format": "uuid",
+            "name": "uuid",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/error"
+            }
+          },
+          "default": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/error"
             }
           }
         }
@@ -164,38 +338,64 @@ func init() {
   "definitions": {
     "application": {
       "type": "object",
+      "required": [
+        "UUID",
+        "medicalOrganizationOID",
+        "divisionOID",
+        "year",
+        "SMNN",
+        "MNN",
+        "form",
+        "dosage",
+        "consumerUnit",
+        "itemUnit",
+        "preferentialDirectionCode",
+        "preferentialDirection"
+      ],
       "properties": {
-        "customer": {
-          "$ref": "#/definitions/customer"
-        },
-        "department": {
-          "$ref": "#/definitions/department"
-        },
-        "medicaments": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/medicament"
-          }
-        },
-        "mnemocode": {
+        "MNN": {
           "type": "string"
+        },
+        "SMNN": {
+          "type": "string"
+        },
+        "UUID": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "consumerUnit": {
+          "type": "string"
+        },
+        "divisionOID": {
+          "type": "string"
+        },
+        "dosage": {
+          "type": "string"
+        },
+        "form": {
+          "type": "string"
+        },
+        "itemUnit": {
+          "type": "string"
+        },
+        "medicalOrganizationOID": {
+          "type": "string"
+        },
+        "preferentialDirection": {
+          "type": "string"
+        },
+        "preferentialDirectionCode": {
+          "type": "string"
+        },
+        "year": {
+          "type": "integer"
         }
       }
     },
-    "customer": {
-      "type": "object",
-      "properties": {
-        "OID": {
-          "type": "string"
-        }
-      }
-    },
-    "department": {
-      "type": "object",
-      "properties": {
-        "OID": {
-          "type": "string"
-        }
+    "applications": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/application"
       }
     },
     "error": {
@@ -205,26 +405,6 @@ func init() {
       ],
       "properties": {
         "message": {
-          "type": "string"
-        }
-      }
-    },
-    "medicament": {
-      "type": "object",
-      "properties": {
-        "MNN": {
-          "type": "string"
-        },
-        "SMNN": {
-          "type": "string"
-        },
-        "consumerUnit": {
-          "type": "string"
-        },
-        "dosage": {
-          "type": "string"
-        },
-        "form": {
           "type": "string"
         }
       }

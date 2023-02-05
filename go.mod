@@ -139,6 +139,7 @@ require (
 	github.com/ryancurrah/gomodguard v1.2.0 // indirect
 	github.com/ryanrolds/sqlclosecheck v0.3.0 // indirect
 	github.com/sanposhiho/wastedassign v1.0.0 // indirect
+	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/securego/gosec/v2 v2.7.0 // indirect
 	github.com/shazow/go-diff v0.0.0-20160112020656-b6b7b6733b8c // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
