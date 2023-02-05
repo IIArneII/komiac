@@ -18,6 +18,8 @@ import (
 	"github.com/go-openapi/spec"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+
+	"komiac/internal/api/restapi/restapi/operations/application"
 )
 
 // NewKomiacAPI creates a new Komiac instance
@@ -42,8 +44,14 @@ func NewKomiacAPI(spec *loads.Document) *KomiacAPI {
 
 		JSONProducer: runtime.JSONProducer(),
 
-		HealthCheckHandler: HealthCheckHandlerFunc(func(params HealthCheckParams) HealthCheckResponder {
-			return HealthCheckNotImplemented()
+		ApplicationAddListHandler: application.AddListHandlerFunc(func(params application.AddListParams) application.AddListResponder {
+			return application.AddListNotImplemented()
+		}),
+		ApplicationDeleteHandler: application.DeleteHandlerFunc(func(params application.DeleteParams) application.DeleteResponder {
+			return application.DeleteNotImplemented()
+		}),
+		ApplicationGetListHandler: application.GetListHandlerFunc(func(params application.GetListParams) application.GetListResponder {
+			return application.GetListNotImplemented()
 		}),
 	}
 }
@@ -81,8 +89,12 @@ type KomiacAPI struct {
 	//   - application/json
 	JSONProducer runtime.Producer
 
-	// HealthCheckHandler sets the operation handler for the health check operation
-	HealthCheckHandler HealthCheckHandler
+	// ApplicationAddListHandler sets the operation handler for the add list operation
+	ApplicationAddListHandler application.AddListHandler
+	// ApplicationDeleteHandler sets the operation handler for the delete operation
+	ApplicationDeleteHandler application.DeleteHandler
+	// ApplicationGetListHandler sets the operation handler for the get list operation
+	ApplicationGetListHandler application.GetListHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -160,8 +172,14 @@ func (o *KomiacAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
-	if o.HealthCheckHandler == nil {
-		unregistered = append(unregistered, "HealthCheckHandler")
+	if o.ApplicationAddListHandler == nil {
+		unregistered = append(unregistered, "application.AddListHandler")
+	}
+	if o.ApplicationDeleteHandler == nil {
+		unregistered = append(unregistered, "application.DeleteHandler")
+	}
+	if o.ApplicationGetListHandler == nil {
+		unregistered = append(unregistered, "application.GetListHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -251,10 +269,18 @@ func (o *KomiacAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/application"] = application.NewAddList(o.context, o.ApplicationAddListHandler)
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/application/{uuid}"] = application.NewDelete(o.context, o.ApplicationDeleteHandler)
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/healthCheck"] = NewHealthCheck(o.context, o.HealthCheckHandler)
+	o.handlers["GET"]["/application"] = application.NewGetList(o.context, o.ApplicationGetListHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

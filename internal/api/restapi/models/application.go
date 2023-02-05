@@ -9,11 +9,11 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // Application application
@@ -21,34 +21,108 @@ import (
 // swagger:model application
 type Application struct {
 
-	// customer
-	Customer *Customer `json:"customer,omitempty"`
+	// m n n
+	// Required: true
+	MNN *string `json:"MNN"`
 
-	// department
-	Department *Department `json:"department,omitempty"`
+	// s m n n
+	// Required: true
+	SMNN *string `json:"SMNN"`
 
-	// medicaments
-	Medicaments []*Medicament `json:"medicaments"`
+	// UUID
+	// Required: true
+	// Format: uuid
+	UUID *strfmt.UUID `json:"UUID"`
 
-	// mnemocode
-	Mnemocode string `json:"mnemocode,omitempty"`
+	// consumer unit
+	// Required: true
+	ConsumerUnit *string `json:"consumerUnit"`
+
+	// division o ID
+	// Required: true
+	DivisionOID *string `json:"divisionOID"`
+
+	// dosage
+	// Required: true
+	Dosage *string `json:"dosage"`
+
+	// form
+	// Required: true
+	Form *string `json:"form"`
+
+	// item unit
+	// Required: true
+	ItemUnit *string `json:"itemUnit"`
+
+	// medical organization o ID
+	// Required: true
+	MedicalOrganizationOID *string `json:"medicalOrganizationOID"`
+
+	// preferential direction
+	// Required: true
+	PreferentialDirection *string `json:"preferentialDirection"`
+
+	// preferential direction code
+	// Required: true
+	PreferentialDirectionCode *string `json:"preferentialDirectionCode"`
+
+	// year
+	// Required: true
+	Year *int64 `json:"year"`
 }
 
 // UnmarshalJSON unmarshals this object while disallowing additional properties from JSON
 func (m *Application) UnmarshalJSON(data []byte) error {
 	var props struct {
 
-		// customer
-		Customer *Customer `json:"customer,omitempty"`
+		// m n n
+		// Required: true
+		MNN *string `json:"MNN"`
 
-		// department
-		Department *Department `json:"department,omitempty"`
+		// s m n n
+		// Required: true
+		SMNN *string `json:"SMNN"`
 
-		// medicaments
-		Medicaments []*Medicament `json:"medicaments"`
+		// UUID
+		// Required: true
+		// Format: uuid
+		UUID *strfmt.UUID `json:"UUID"`
 
-		// mnemocode
-		Mnemocode string `json:"mnemocode,omitempty"`
+		// consumer unit
+		// Required: true
+		ConsumerUnit *string `json:"consumerUnit"`
+
+		// division o ID
+		// Required: true
+		DivisionOID *string `json:"divisionOID"`
+
+		// dosage
+		// Required: true
+		Dosage *string `json:"dosage"`
+
+		// form
+		// Required: true
+		Form *string `json:"form"`
+
+		// item unit
+		// Required: true
+		ItemUnit *string `json:"itemUnit"`
+
+		// medical organization o ID
+		// Required: true
+		MedicalOrganizationOID *string `json:"medicalOrganizationOID"`
+
+		// preferential direction
+		// Required: true
+		PreferentialDirection *string `json:"preferentialDirection"`
+
+		// preferential direction code
+		// Required: true
+		PreferentialDirectionCode *string `json:"preferentialDirectionCode"`
+
+		// year
+		// Required: true
+		Year *int64 `json:"year"`
 	}
 
 	dec := json.NewDecoder(bytes.NewReader(data))
@@ -57,10 +131,18 @@ func (m *Application) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	m.Customer = props.Customer
-	m.Department = props.Department
-	m.Medicaments = props.Medicaments
-	m.Mnemocode = props.Mnemocode
+	m.MNN = props.MNN
+	m.SMNN = props.SMNN
+	m.UUID = props.UUID
+	m.ConsumerUnit = props.ConsumerUnit
+	m.DivisionOID = props.DivisionOID
+	m.Dosage = props.Dosage
+	m.Form = props.Form
+	m.ItemUnit = props.ItemUnit
+	m.MedicalOrganizationOID = props.MedicalOrganizationOID
+	m.PreferentialDirection = props.PreferentialDirection
+	m.PreferentialDirectionCode = props.PreferentialDirectionCode
+	m.Year = props.Year
 	return nil
 }
 
@@ -68,15 +150,51 @@ func (m *Application) UnmarshalJSON(data []byte) error {
 func (m *Application) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateCustomer(formats); err != nil {
+	if err := m.validateMNN(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateDepartment(formats); err != nil {
+	if err := m.validateSMNN(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validateMedicaments(formats); err != nil {
+	if err := m.validateUUID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateConsumerUnit(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateDivisionOID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateDosage(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateForm(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateItemUnit(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateMedicalOrganizationOID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePreferentialDirection(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePreferentialDirectionCode(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateYear(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -86,141 +204,120 @@ func (m *Application) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Application) validateCustomer(formats strfmt.Registry) error {
-	if swag.IsZero(m.Customer) { // not required
-		return nil
-	}
+func (m *Application) validateMNN(formats strfmt.Registry) error {
 
-	if m.Customer != nil {
-		if err := m.Customer.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("customer")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("customer")
-			}
-			return err
-		}
+	if err := validate.Required("MNN", "body", m.MNN); err != nil {
+		return err
 	}
 
 	return nil
 }
 
-func (m *Application) validateDepartment(formats strfmt.Registry) error {
-	if swag.IsZero(m.Department) { // not required
-		return nil
-	}
+func (m *Application) validateSMNN(formats strfmt.Registry) error {
 
-	if m.Department != nil {
-		if err := m.Department.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("department")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("department")
-			}
-			return err
-		}
+	if err := validate.Required("SMNN", "body", m.SMNN); err != nil {
+		return err
 	}
 
 	return nil
 }
 
-func (m *Application) validateMedicaments(formats strfmt.Registry) error {
-	if swag.IsZero(m.Medicaments) { // not required
-		return nil
+func (m *Application) validateUUID(formats strfmt.Registry) error {
+
+	if err := validate.Required("UUID", "body", m.UUID); err != nil {
+		return err
 	}
 
-	for i := 0; i < len(m.Medicaments); i++ {
-		if swag.IsZero(m.Medicaments[i]) { // not required
-			continue
-		}
-
-		if m.Medicaments[i] != nil {
-			if err := m.Medicaments[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("medicaments" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("medicaments" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
+	if err := validate.FormatOf("UUID", "body", "uuid", m.UUID.String(), formats); err != nil {
+		return err
 	}
 
 	return nil
 }
 
-// ContextValidate validate this application based on the context it is used
+func (m *Application) validateConsumerUnit(formats strfmt.Registry) error {
+
+	if err := validate.Required("consumerUnit", "body", m.ConsumerUnit); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Application) validateDivisionOID(formats strfmt.Registry) error {
+
+	if err := validate.Required("divisionOID", "body", m.DivisionOID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Application) validateDosage(formats strfmt.Registry) error {
+
+	if err := validate.Required("dosage", "body", m.Dosage); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Application) validateForm(formats strfmt.Registry) error {
+
+	if err := validate.Required("form", "body", m.Form); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Application) validateItemUnit(formats strfmt.Registry) error {
+
+	if err := validate.Required("itemUnit", "body", m.ItemUnit); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Application) validateMedicalOrganizationOID(formats strfmt.Registry) error {
+
+	if err := validate.Required("medicalOrganizationOID", "body", m.MedicalOrganizationOID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Application) validatePreferentialDirection(formats strfmt.Registry) error {
+
+	if err := validate.Required("preferentialDirection", "body", m.PreferentialDirection); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Application) validatePreferentialDirectionCode(formats strfmt.Registry) error {
+
+	if err := validate.Required("preferentialDirectionCode", "body", m.PreferentialDirectionCode); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Application) validateYear(formats strfmt.Registry) error {
+
+	if err := validate.Required("year", "body", m.Year); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ContextValidate validates this application based on context it is used
 func (m *Application) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
-	var res []error
-
-	if err := m.contextValidateCustomer(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateDepartment(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateMedicaments(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
-	}
-	return nil
-}
-
-func (m *Application) contextValidateCustomer(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Customer != nil {
-		if err := m.Customer.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("customer")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("customer")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *Application) contextValidateDepartment(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Department != nil {
-		if err := m.Department.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("department")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("department")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *Application) contextValidateMedicaments(ctx context.Context, formats strfmt.Registry) error {
-
-	for i := 0; i < len(m.Medicaments); i++ {
-
-		if m.Medicaments[i] != nil {
-			if err := m.Medicaments[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
-					return ve.ValidateName("medicaments" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
-					return ce.ValidateName("medicaments" + "." + strconv.Itoa(i))
-				}
-				return err
-			}
-		}
-
-	}
-
 	return nil
 }
 

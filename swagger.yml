@@ -3,7 +3,7 @@ swagger: "2.0"
 info:
   description: "microservice for komiac"
   title: komiac
-  version: 1.0.0
+  version: 1.1.0
 
 basePath: /v1
 
@@ -24,32 +24,18 @@ definitions:
     properties:
       message:
         type: string
-  customer:
-    type: object
-    properties:
-      OID:
-        type: string
-  department:
-    type: object
-    properties:
-      OID:
-        type: string
   application:
     type: object
     properties:
-      customer:
-        $ref: "#/definitions/customer"
-      department:
-        $ref: "#/definitions/department"
-      mnemocode:
+      UUID:
         type: string
-      medicaments:
-        type: array
-        items: 
-          $ref: "#/definitions/medicament"
-  medicament:
-    type: object
-    properties:
+        format: uuid
+      medicalOrganizationOID:
+        type: string
+      divisionOID:
+        type: string
+      year:
+        type: integer
       SMNN:
         type: string
       MNN:
@@ -60,24 +46,95 @@ definitions:
         type: string
       consumerUnit:
         type: string
+      itemUnit:
+        type: string
+      preferentialDirectionCode:
+        type: string
+      preferentialDirection:
+        type: string
+    required:
+      - UUID
+      - medicalOrganizationOID
+      - divisionOID
+      - year
+      - SMNN
+      - MNN
+      - form
+      - dosage
+      - consumerUnit
+      - itemUnit
+      - preferentialDirectionCode
+      - preferentialDirection
+  applications:
+    type: array
+    items:
+      $ref: "#/definitions/application"
+
 
 paths:
-  /healthCheck:
+  /application:
+    post:
+      tags:
+        - Application
+      operationId: addList
+      description: "Add new and update existing applications"
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "#/definitions/applications"
+      responses:
+        204:
+          description: "Success"
+        default:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/error"
     get:
-      operationId: healthCheck
+      tags:
+        - Application
+      operationId: getList
+      parameters:
+        - name: divisionOID
+          in: query
+          type: string
+        - name: year
+          in: query
+          type: integer
+        - name: MNN
+          in: query
+          type: string
+      description: "Get applications by filters"
       responses:
         200:
-          description: OK
+          description: "Success"
           schema:
-            type: object
-            properties:
-              ok:
-                type: boolean
-  #/application:
-  #  get:
+            $ref: "#/definitions/applications"
+        default:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/error"
 
-  #  put:
-
-  #  delete:
-      
-  #  post:
+  /application/{uuid}:
+    delete:
+      tags:
+        - Application
+      operationId: delete
+      description: "Delete application"
+      parameters:
+        - name: uuid
+          in: path
+          required: true
+          type: string
+          format: uuid
+      responses:
+        204:
+          description: "Success"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/error"
+        default:
+          description: "Error"
+          schema:
+            $ref: "#/definitions/error"
