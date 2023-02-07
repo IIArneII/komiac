@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-openapi/loads"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 type Config struct {
@@ -16,12 +17,14 @@ type Config struct {
 }
 
 type service struct {
+	log *logrus.Logger
 	app *app.App
 }
 
 func NewServer(app *app.App, cfg Config) (*restapi.Server, error) {
 	service := &service{
 		app: app,
+		log: logrus.New(),
 	}
 
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
@@ -34,6 +37,10 @@ func NewServer(app *app.App, cfg Config) (*restapi.Server, error) {
 	api.ApplicationAddListHandler = application.AddListHandlerFunc(service.ApplicationAddList)
 	api.ApplicationGetListHandler = application.GetListHandlerFunc(service.ApplicationGetList)
 	api.ApplicationDeleteHandler = application.DeleteHandlerFunc(service.ApplicationDelete)
+
+	api.Logger = func(s string, i ...interface{}) {
+		service.log.Info(append(append(make([]interface{}, 0), s), i...)...)
+	}
 
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host

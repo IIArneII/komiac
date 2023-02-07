@@ -7,9 +7,14 @@ import (
 	"komiac/internal/dto"
 
 	uuid "github.com/satori/go.uuid"
+	"github.com/sirupsen/logrus"
 )
 
 func (svc *service) ApplicationAddList(params application.AddListParams) application.AddListResponder {
+	svc.log.WithFields(logrus.Fields{
+		"method": params.HTTPRequest.Method,
+		"url":    params.HTTPRequest.URL,
+	}).Info("ApplicationAddList")
 
 	applications, err := dto.AppApplications(params.Body)
 	if err != nil {

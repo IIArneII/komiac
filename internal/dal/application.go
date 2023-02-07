@@ -47,6 +47,7 @@ func (s *Storage) Get(cxt context.Context, uuid uuid.UUID) (*entities.Applicatio
 		UUID: uuid,
 	})
 	if err == db_sql.ErrNoRows {
+		s.log.WithField("uuid", uuid.String()).Info("Application not found")
 		return nil, app_errors.ErrNotFound
 	} else if err != nil {
 		return nil, err
