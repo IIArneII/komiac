@@ -10,12 +10,12 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/powerman/pqx"
 	"github.com/powerman/sqlxx"
-	"github.com/powerman/structlog"
 	"github.com/pressly/goose/v3"
+	"github.com/sirupsen/logrus"
 )
 
 var (
-	log = structlog.New()
+	log = logrus.New()
 	cfg struct {
 		gooseDir string
 		db       pqx.Config
@@ -83,13 +83,13 @@ func migrateDB(db *sql.DB, dir string) error {
 func main() {
 	db, err := connectDB(cfg.db)
 	if err != nil {
-		log.Err("DB is not connected", "err", err)
+		log.WithError(err).Error("DB is not connected")
 		return
 	}
 
 	err = migrateDB(db.DB.DB, cfg.gooseDir)
 	if err != nil {
-		log.Err("Migration error", "err", err)
+		log.WithError(err).Error("Migration error")
 		return
 	}
 
