@@ -14,32 +14,32 @@ import (
 	"komiac/internal/api/restapi/models"
 )
 
-// AddListNoContentCode is the HTTP code returned for type AddListNoContent
-const AddListNoContentCode int = 204
+// AddListOKCode is the HTTP code returned for type AddListOK
+const AddListOKCode int = 200
 
 /*
-AddListNoContent Success
+AddListOK Success
 
-swagger:response addListNoContent
+swagger:response addListOK
 */
-type AddListNoContent struct {
+type AddListOK struct {
 }
 
-// NewAddListNoContent creates AddListNoContent with default headers values
-func NewAddListNoContent() *AddListNoContent {
+// NewAddListOK creates AddListOK with default headers values
+func NewAddListOK() *AddListOK {
 
-	return &AddListNoContent{}
+	return &AddListOK{}
 }
 
 // WriteResponse to the client
-func (o *AddListNoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *AddListOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
-	rw.WriteHeader(204)
+	rw.WriteHeader(200)
 }
 
-func (o *AddListNoContent) AddListResponder() {}
+func (o *AddListOK) AddListResponder() {}
 
 /*
 AddListDefault Error

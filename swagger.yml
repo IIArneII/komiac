@@ -3,7 +3,7 @@ swagger: "2.0"
 info:
   description: "microservice for komiac"
   title: komiac
-  version: 1.1.0
+  version: 1.3.0
 
 basePath: /v1
 
@@ -48,9 +48,9 @@ definitions:
         type: string
       itemUnit:
         type: string
-      preferentialDirectionCode:
+      privilegeProgramCode:
         type: string
-      preferentialDirection:
+      privilegeProgram:
         type: string
     required:
       - UUID
@@ -63,8 +63,8 @@ definitions:
       - dosage
       - consumerUnit
       - itemUnit
-      - preferentialDirectionCode
-      - preferentialDirection
+      - privilegeProgramCode
+      - privilegeProgram
   applications:
     type: array
     items:
@@ -84,7 +84,7 @@ paths:
           schema:
             $ref: "#/definitions/applications"
       responses:
-        204:
+        200:
           description: "Success"
         default:
           description: "Error"
@@ -128,7 +128,7 @@ paths:
           type: string
           format: uuid
       responses:
-        204:
+        200:
           description: "Success"
         404:
           description: "Not Found"

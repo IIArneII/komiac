@@ -58,13 +58,13 @@ type Application struct {
 	// Required: true
 	MedicalOrganizationOID *string `json:"medicalOrganizationOID"`
 
-	// preferential direction
+	// privilege program
 	// Required: true
-	PreferentialDirection *string `json:"preferentialDirection"`
+	PrivilegeProgram *string `json:"privilegeProgram"`
 
-	// preferential direction code
+	// privilege program code
 	// Required: true
-	PreferentialDirectionCode *string `json:"preferentialDirectionCode"`
+	PrivilegeProgramCode *string `json:"privilegeProgramCode"`
 
 	// year
 	// Required: true
@@ -112,13 +112,13 @@ func (m *Application) UnmarshalJSON(data []byte) error {
 		// Required: true
 		MedicalOrganizationOID *string `json:"medicalOrganizationOID"`
 
-		// preferential direction
+		// privilege program
 		// Required: true
-		PreferentialDirection *string `json:"preferentialDirection"`
+		PrivilegeProgram *string `json:"privilegeProgram"`
 
-		// preferential direction code
+		// privilege program code
 		// Required: true
-		PreferentialDirectionCode *string `json:"preferentialDirectionCode"`
+		PrivilegeProgramCode *string `json:"privilegeProgramCode"`
 
 		// year
 		// Required: true
@@ -140,8 +140,8 @@ func (m *Application) UnmarshalJSON(data []byte) error {
 	m.Form = props.Form
 	m.ItemUnit = props.ItemUnit
 	m.MedicalOrganizationOID = props.MedicalOrganizationOID
-	m.PreferentialDirection = props.PreferentialDirection
-	m.PreferentialDirectionCode = props.PreferentialDirectionCode
+	m.PrivilegeProgram = props.PrivilegeProgram
+	m.PrivilegeProgramCode = props.PrivilegeProgramCode
 	m.Year = props.Year
 	return nil
 }
@@ -186,11 +186,11 @@ func (m *Application) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validatePreferentialDirection(formats); err != nil {
+	if err := m.validatePrivilegeProgram(formats); err != nil {
 		res = append(res, err)
 	}
 
-	if err := m.validatePreferentialDirectionCode(formats); err != nil {
+	if err := m.validatePrivilegeProgramCode(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -289,18 +289,18 @@ func (m *Application) validateMedicalOrganizationOID(formats strfmt.Registry) er
 	return nil
 }
 
-func (m *Application) validatePreferentialDirection(formats strfmt.Registry) error {
+func (m *Application) validatePrivilegeProgram(formats strfmt.Registry) error {
 
-	if err := validate.Required("preferentialDirection", "body", m.PreferentialDirection); err != nil {
+	if err := validate.Required("privilegeProgram", "body", m.PrivilegeProgram); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (m *Application) validatePreferentialDirectionCode(formats strfmt.Registry) error {
+func (m *Application) validatePrivilegeProgramCode(formats strfmt.Registry) error {
 
-	if err := validate.Required("preferentialDirectionCode", "body", m.PreferentialDirectionCode); err != nil {
+	if err := validate.Required("privilegeProgramCode", "body", m.PrivilegeProgramCode); err != nil {
 		return err
 	}
 
