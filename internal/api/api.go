@@ -3,6 +3,7 @@ package api
 import (
 	"komiac/internal/api/restapi/restapi"
 	"komiac/internal/api/restapi/restapi/operations"
+	"komiac/internal/api/restapi/restapi/operations/application"
 	"komiac/internal/app"
 
 	"github.com/go-openapi/loads"
@@ -19,9 +20,9 @@ type service struct {
 }
 
 func NewServer(app *app.App, cfg Config) (*restapi.Server, error) {
-	//service := &service{
-	//	app: app,
-	//}
+	service := &service{
+		app: app,
+	}
 
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
 	if err != nil {
@@ -30,7 +31,9 @@ func NewServer(app *app.App, cfg Config) (*restapi.Server, error) {
 
 	api := operations.NewKomiacAPI(swaggerSpec)
 
-	//api.ApplicationAddListHandler = operations.
+	api.ApplicationAddListHandler = application.AddListHandlerFunc(service.ApplicationAddList)
+	api.ApplicationGetListHandler = application.GetListHandlerFunc(service.ApplicationGetList)
+	api.ApplicationDeleteHandler = application.DeleteHandlerFunc(service.ApplicationDelete)
 
 	server := restapi.NewServer(api)
 	server.Host = cfg.Host

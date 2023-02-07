@@ -1,6 +1,7 @@
 package api
 
 import (
+	"komiac/internal/api/restapi/models"
 	"komiac/internal/api/restapi/restapi/operations/application"
 	"komiac/internal/app/entities"
 	"komiac/internal/dto"
@@ -9,9 +10,24 @@ import (
 )
 
 func (svc *service) ApplicationAddList(params application.AddListParams) application.AddListResponder {
-	svc.app.ApplicationSvc.AddList(params.HTTPRequest.Context(), dto.AppApplications(params.Body))
 
-	return application.NewAddListDefault(404)
+	applications, err := dto.AppApplications(params.Body)
+	if err != nil {
+		errStr := err.Error()
+		return application.NewAddListDefault(500).WithPayload(&models.Error{
+			Message: &errStr,
+		})
+	}
+
+	err = svc.app.ApplicationSvc.AddList(params.HTTPRequest.Context(), applications)
+	if err != nil {
+		errStr := err.Error()
+		return application.NewAddListDefault(500).WithPayload(&models.Error{
+			Message: &errStr,
+		})
+	}
+
+	return application.NewAddListOK()
 }
 
 func (svc *service) ApplicationGetList(params application.GetListParams) application.GetListResponder {
