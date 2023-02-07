@@ -14,32 +14,32 @@ import (
 	"komiac/internal/api/restapi/models"
 )
 
-// DeleteNoContentCode is the HTTP code returned for type DeleteNoContent
-const DeleteNoContentCode int = 204
+// DeleteOKCode is the HTTP code returned for type DeleteOK
+const DeleteOKCode int = 200
 
 /*
-DeleteNoContent Success
+DeleteOK Success
 
-swagger:response deleteNoContent
+swagger:response deleteOK
 */
-type DeleteNoContent struct {
+type DeleteOK struct {
 }
 
-// NewDeleteNoContent creates DeleteNoContent with default headers values
-func NewDeleteNoContent() *DeleteNoContent {
+// NewDeleteOK creates DeleteOK with default headers values
+func NewDeleteOK() *DeleteOK {
 
-	return &DeleteNoContent{}
+	return &DeleteOK{}
 }
 
 // WriteResponse to the client
-func (o *DeleteNoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+func (o *DeleteOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
-	rw.WriteHeader(204)
+	rw.WriteHeader(200)
 }
 
-func (o *DeleteNoContent) DeleteResponder() {}
+func (o *DeleteOK) DeleteResponder() {}
 
 // DeleteNotFoundCode is the HTTP code returned for type DeleteNotFound
 const DeleteNotFoundCode int = 404

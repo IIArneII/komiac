@@ -31,7 +31,7 @@ func init() {
   "info": {
     "description": "microservice for komiac",
     "title": "komiac",
-    "version": "1.1.0"
+    "version": "1.3.0"
   },
   "basePath": "/v1",
   "paths": {
@@ -90,7 +90,7 @@ func init() {
           }
         ],
         "responses": {
-          "204": {
+          "200": {
             "description": "Success"
           },
           "default": {
@@ -119,7 +119,7 @@ func init() {
           }
         ],
         "responses": {
-          "204": {
+          "200": {
             "description": "Success"
           },
           "404": {
@@ -152,8 +152,8 @@ func init() {
         "dosage",
         "consumerUnit",
         "itemUnit",
-        "preferentialDirectionCode",
-        "preferentialDirection"
+        "privilegeProgramCode",
+        "privilegeProgram"
       ],
       "properties": {
         "MNN": {
@@ -184,10 +184,10 @@ func init() {
         "medicalOrganizationOID": {
           "type": "string"
         },
-        "preferentialDirection": {
+        "privilegeProgram": {
           "type": "string"
         },
-        "preferentialDirectionCode": {
+        "privilegeProgramCode": {
           "type": "string"
         },
         "year": {
@@ -228,7 +228,7 @@ func init() {
   "info": {
     "description": "microservice for komiac",
     "title": "komiac",
-    "version": "1.1.0"
+    "version": "1.3.0"
   },
   "basePath": "/v1",
   "paths": {
@@ -287,7 +287,7 @@ func init() {
           }
         ],
         "responses": {
-          "204": {
+          "200": {
             "description": "Success"
           },
           "default": {
@@ -316,7 +316,7 @@ func init() {
           }
         ],
         "responses": {
-          "204": {
+          "200": {
             "description": "Success"
           },
           "404": {
@@ -349,8 +349,8 @@ func init() {
         "dosage",
         "consumerUnit",
         "itemUnit",
-        "preferentialDirectionCode",
-        "preferentialDirection"
+        "privilegeProgramCode",
+        "privilegeProgram"
       ],
       "properties": {
         "MNN": {
@@ -381,10 +381,10 @@ func init() {
         "medicalOrganizationOID": {
           "type": "string"
         },
-        "preferentialDirection": {
+        "privilegeProgram": {
           "type": "string"
         },
-        "preferentialDirectionCode": {
+        "privilegeProgramCode": {
           "type": "string"
         },
         "year": {
