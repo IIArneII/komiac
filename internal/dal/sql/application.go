@@ -17,8 +17,8 @@ var (
 	`
 
 	ApplicationUpdateSql = `
-	UPDATE applications SET (medical_organization_oid, division_oid, year, smnn, mnn, form, dosage, consumer_unit, item_unit, privilege_program_code, privilege_program) =
-	(:medical_organization_oid, :division_oid, :year, :smnn, :mnn, :form, :dosage, :consumer_unit, :item_unit, :privilege_program_code, :privilege_program)
+	UPDATE applications SET (medical_organization_oid, division_oid, year, smnn, mnn, form, dosage, consumer_unit, item_unit, privilege_program_code, privilege_program, modified_at) =
+	(:medical_organization_oid, :division_oid, :year, :smnn, :mnn, :form, :dosage, :consumer_unit, :item_unit, :privilege_program_code, :privilege_program, :modified_at)
 	WHERE uuid=:uuid
 	`
 )

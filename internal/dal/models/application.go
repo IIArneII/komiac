@@ -21,4 +21,5 @@ type Application struct {
 	PrivilegeProgram       string     `db:"privilege_program"`
 	CreatedAt              time.Time  `db:"created_at"`
 	DeletedAt              *time.Time `db:"deleted_at"`
+	ModifiedAt             *time.Time `db:"modified_at"`
 }

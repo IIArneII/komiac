@@ -74,6 +74,7 @@ func (s *Storage) Delete(cxt context.Context, uuid uuid.UUID) error {
 }
 
 func (s *Storage) Update(cxt context.Context, application *entities.Application) (*entities.Application, error) {
+	modifiedAt := time.Now()
 	_, err := s.db.NamedExecContext(cxt, sql.ApplicationUpdateSql, models.Application{
 		UUID:                   application.UUID,
 		MedicalOrganizationOID: application.MedicalOrganizationOID,
@@ -87,6 +88,7 @@ func (s *Storage) Update(cxt context.Context, application *entities.Application)
 		ItemUnit:               application.ItemUnit,
 		PrivilegeProgramCode:   application.PrivilegeProgramCode,
 		PrivilegeProgram:       application.PrivilegeProgram,
+		ModifiedAt:             &modifiedAt,
 	})
 	if err != nil {
 		return nil, err
