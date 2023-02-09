@@ -36,7 +36,12 @@ func NewApplicationService(repo ApplicationRepository) ApplicationService {
 }
 
 func (svc *ApplicationSvc) GetList(cxt context.Context, filter entities.ApplicationFilter) ([]*entities.Application, error) {
-	svc.log.WithField("DivisionOID: ", filter.DivisionOID).Info("GetListList")
+	svc.log.WithFields(logrus.Fields{
+		"DivisionOID": filter.DivisionOID,
+		"Year":        filter.Year,
+		"MNN":         filter.MNN,
+	}).Info("GetList")
+
 	return svc.repo.GetList(cxt, filter)
 }
 
@@ -71,6 +76,7 @@ func (svc *ApplicationSvc) AddList(cxt context.Context, applications []*entities
 }
 
 func (svc *ApplicationSvc) Delete(cxt context.Context, uuid uuid.UUID) error {
-	svc.log.WithField("UUID: ", uuid).Info("Delete")
+	svc.log.WithField("uuid", uuid).Info("Delete")
+
 	return svc.repo.Delete(cxt, uuid)
 }
