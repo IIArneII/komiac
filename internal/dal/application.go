@@ -3,7 +3,6 @@ package dal
 import (
 	"context"
 	db_sql "database/sql"
-	"errors"
 	"komiac/internal/app/entities"
 	app_errors "komiac/internal/app/errors"
 	"komiac/internal/dal/models"
@@ -14,7 +13,21 @@ import (
 )
 
 func (s *Storage) GetList(cxt context.Context, filter entities.ApplicationFilter) ([]*entities.Application, error) {
-	return nil, errors.New("not implemented")
+	applicationModel := []models.Application{}
+
+	err := s.db.NamedSelectContext(cxt, &applicationModel, sql.AplicationGetListSql, sql.ApplicationGetListParams{
+		DivisionOid: *filter.DivisionOID,
+		Year:        *filter.Year,
+		Mnn:         *filter.MNN,
+	})
+
+	if err == db_sql.ErrNoRows {
+		return nil, app_errors.ErrNotFound
+	} else if err != nil {
+		return nil, err
+	}
+
+	return appLists(applicationModel), nil
 }
 
 func (s *Storage) Create(cxt context.Context, application *entities.Application) (*entities.Application, error) {
@@ -70,7 +83,19 @@ func (s *Storage) Get(cxt context.Context, uuid uuid.UUID) (*entities.Applicatio
 }
 
 func (s *Storage) Delete(cxt context.Context, uuid uuid.UUID) error {
-	return errors.New("not implemented")
+	t := time.Now()
+	res, err := s.db.NamedExec(sql.AplicationDeleteSql, sql.ApplicationDeleteParams{
+		UUID:      uuid,
+		DeletedAt: t,
+	})
+	if err != nil {
+		return err
+	}
+	if count, _ := res.RowsAffected(); count == 0 {
+		return app_errors.ErrNotFound
+	}
+
+	return nil
 }
 
 func (s *Storage) Update(cxt context.Context, application *entities.Application) (*entities.Application, error) {
@@ -95,4 +120,29 @@ func (s *Storage) Update(cxt context.Context, application *entities.Application)
 	}
 
 	return s.Get(cxt, application.UUID)
+}
+
+func appList(m models.Application) *entities.Application {
+	return &entities.Application{
+		UUID:                   m.UUID,
+		MedicalOrganizationOID: m.MedicalOrganizationOID,
+		DivisionOID:            m.DivisionOID,
+		Year:                   m.Year,
+		SMNN:                   m.SMNN,
+		MNN:                    m.MNN,
+		Form:                   m.Form,
+		Dosage:                 m.Dosage,
+		ConsumerUnit:           m.ConsumerUnit,
+		ItemUnit:               m.ItemUnit,
+		PrivilegeProgramCode:   m.PrivilegeProgramCode,
+		PrivilegeProgram:       m.PrivilegeProgram,
+	}
+}
+
+func appLists(ms []models.Application) []*entities.Application {
+	ams := []*entities.Application{}
+	for _, m := range ms {
+		ams = append(ams, appList(m))
+	}
+	return ams
 }
