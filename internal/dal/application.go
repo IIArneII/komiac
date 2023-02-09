@@ -16,12 +16,23 @@ import (
 
 func (s *Storage) GetList(cxt context.Context, filter entities.ApplicationFilter) ([]*entities.Application, error) {
 	applicationModels := []models.Application{}
+	var filterStrs string
+	namedVars := map[string]interface{}{}
 
-	err := s.db.NamedSelectContext(cxt, &applicationModels, sql.AplicationGetListSql, sql.ApplicationGetListParams{
-		DivisionOid: *filter.DivisionOID,
-		Year:        *filter.Year,
-		Mnn:         *filter.MNN,
-	})
+	if filter.DivisionOID != nil {
+		filterStrs += "AND division_oid=:DivisionOID "
+		namedVars["DivisionOID"] = filter.DivisionOID
+	}
+	if filter.Year != nil {
+		filterStrs += "AND year=:Year "
+		namedVars["Year"] = filter.Year
+	}
+	if filter.MNN != nil {
+		filterStrs += "AND mnn=:MNN "
+		namedVars["MNN"] = filter.MNN
+	}
+
+	err := s.db.NamedSelectContext(cxt, &applicationModels, sql.AplicationGetListSql+filterStrs, namedVars)
 
 	if err == db_sql.ErrNoRows {
 		s.log.WithFields(logrus.Fields{

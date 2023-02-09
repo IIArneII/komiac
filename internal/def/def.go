@@ -14,7 +14,7 @@ var (
 	log = structlog.New()
 
 	DBHost = os.Getenv("KOMIAC_DB_HOST")
-	DBPort = intGetenv("KOMIAC_DB_PORT", 5431)
+	DBPort = intGetenv("KOMIAC_DB_PORT", 5432)
 	DBUser = os.Getenv("KOMIAC_DB_USER")
 	DBPass = os.Getenv("KOMIAC_DB_PASS")
 	DBName = os.Getenv("KOMIAC_DB_NAME")

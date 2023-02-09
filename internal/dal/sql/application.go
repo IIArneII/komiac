@@ -29,7 +29,7 @@ var (
 	`
 
 	AplicationGetListSql = `
-	SELECT * FROM applications WHERE division_oid=:division_oid AND year=:year AND mnn=:mnn AND deleted_at IS NULL
+	SELECT * FROM applications WHERE deleted_at IS NULL 
 	`
 
 	ApplicationGetSql = `
