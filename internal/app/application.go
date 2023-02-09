@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"errors"
 	"komiac/internal/app/entities"
 	app_errors "komiac/internal/app/errors"
 
@@ -11,9 +10,9 @@ import (
 )
 
 type ApplicationService interface {
-	GetList(cxt context.Context, filter entities.ApplicationFilter) (*entities.Application, error)
+	GetList(cxt context.Context, filter entities.ApplicationFilter) ([]*entities.Application, error)
 	AddList(cxt context.Context, application []*entities.Application) error
-	Delete(cxt context.Context, uuid uuid.UUID) (*entities.Application, error)
+	Delete(cxt context.Context, uuid uuid.UUID) error
 }
 
 type ApplicationRepository interface {
@@ -36,8 +35,9 @@ func NewApplicationService(repo ApplicationRepository) ApplicationService {
 	}
 }
 
-func (svc *ApplicationSvc) GetList(cxt context.Context, filter entities.ApplicationFilter) (*entities.Application, error) {
-	return nil, errors.New("not implemented")
+func (svc *ApplicationSvc) GetList(cxt context.Context, filter entities.ApplicationFilter) ([]*entities.Application, error) {
+	svc.log.WithField("DivisionOID: ", filter.DivisionOID).Info("GetListList")
+	return svc.repo.GetList(cxt, filter)
 }
 
 func (svc *ApplicationSvc) AddList(cxt context.Context, applications []*entities.Application) error {
@@ -70,6 +70,7 @@ func (svc *ApplicationSvc) AddList(cxt context.Context, applications []*entities
 	return nil
 }
 
-func (svc *ApplicationSvc) Delete(cxt context.Context, uuid uuid.UUID) (*entities.Application, error) {
-	return nil, errors.New("not implemented")
+func (svc *ApplicationSvc) Delete(cxt context.Context, uuid uuid.UUID) error {
+	svc.log.WithField("UUID: ", uuid).Info("Delete")
+	return svc.repo.Delete(cxt, uuid)
 }
