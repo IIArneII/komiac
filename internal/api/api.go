@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"komiac/internal/api/restapi/restapi"
 	"komiac/internal/api/restapi/restapi/operations"
 	"komiac/internal/api/restapi/restapi/operations/application"
@@ -39,7 +40,7 @@ func NewServer(app *app.App, cfg Config) (*restapi.Server, error) {
 	api.ApplicationDeleteHandler = application.DeleteHandlerFunc(service.ApplicationDelete)
 
 	api.Logger = func(s string, i ...interface{}) {
-		service.log.Info(append(append(make([]interface{}, 0), s), i...)...)
+		service.log.Info(fmt.Sprintf(s, i...))
 	}
 
 	server := restapi.NewServer(api)

@@ -7,27 +7,34 @@ import (
 	app_errors "komiac/internal/app/errors"
 	"komiac/internal/dal/models"
 	"komiac/internal/dal/sql"
+	"komiac/internal/dto"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
+	"github.com/sirupsen/logrus"
 )
 
 func (s *Storage) GetList(cxt context.Context, filter entities.ApplicationFilter) ([]*entities.Application, error) {
-	applicationModel := []models.Application{}
+	applicationModels := []models.Application{}
 
-	err := s.db.NamedSelectContext(cxt, &applicationModel, sql.AplicationGetListSql, sql.ApplicationGetListParams{
+	err := s.db.NamedSelectContext(cxt, &applicationModels, sql.AplicationGetListSql, sql.ApplicationGetListParams{
 		DivisionOid: *filter.DivisionOID,
 		Year:        *filter.Year,
 		Mnn:         *filter.MNN,
 	})
 
 	if err == db_sql.ErrNoRows {
-		return nil, app_errors.ErrNotFound
+		s.log.WithFields(logrus.Fields{
+			"DivisionOID": filter.DivisionOID,
+			"Year":        filter.Year,
+			"MNN":         filter.MNN,
+		}).Info("Applications not found")
+		return []*entities.Application{}, nil
 	} else if err != nil {
 		return nil, err
 	}
 
-	return appLists(applicationModel), nil
+	return dto.DalToAppApplications(applicationModels), nil
 }
 
 func (s *Storage) Create(cxt context.Context, application *entities.Application) (*entities.Application, error) {
@@ -83,15 +90,15 @@ func (s *Storage) Get(cxt context.Context, uuid uuid.UUID) (*entities.Applicatio
 }
 
 func (s *Storage) Delete(cxt context.Context, uuid uuid.UUID) error {
-	t := time.Now()
-	res, err := s.db.NamedExec(sql.AplicationDeleteSql, sql.ApplicationDeleteParams{
+	result, err := s.db.NamedExec(sql.AplicationDeleteSql, sql.ApplicationDeleteParams{
 		UUID:      uuid,
-		DeletedAt: t,
+		DeletedAt: time.Now(),
 	})
 	if err != nil {
 		return err
 	}
-	if count, _ := res.RowsAffected(); count == 0 {
+
+	if count, _ := result.RowsAffected(); count == 0 {
 		return app_errors.ErrNotFound
 	}
 
@@ -100,7 +107,7 @@ func (s *Storage) Delete(cxt context.Context, uuid uuid.UUID) error {
 
 func (s *Storage) Update(cxt context.Context, application *entities.Application) (*entities.Application, error) {
 	modifiedAt := time.Now()
-	_, err := s.db.NamedExecContext(cxt, sql.ApplicationUpdateSql, models.Application{
+	result, err := s.db.NamedExecContext(cxt, sql.ApplicationUpdateSql, models.Application{
 		UUID:                   application.UUID,
 		MedicalOrganizationOID: application.MedicalOrganizationOID,
 		DivisionOID:            application.DivisionOID,
@@ -119,30 +126,9 @@ func (s *Storage) Update(cxt context.Context, application *entities.Application)
 		return nil, err
 	}
 
+	if count, _ := result.RowsAffected(); count == 0 {
+		return nil, app_errors.ErrNotFound
+	}
+
 	return s.Get(cxt, application.UUID)
-}
-
-func appList(m models.Application) *entities.Application {
-	return &entities.Application{
-		UUID:                   m.UUID,
-		MedicalOrganizationOID: m.MedicalOrganizationOID,
-		DivisionOID:            m.DivisionOID,
-		Year:                   m.Year,
-		SMNN:                   m.SMNN,
-		MNN:                    m.MNN,
-		Form:                   m.Form,
-		Dosage:                 m.Dosage,
-		ConsumerUnit:           m.ConsumerUnit,
-		ItemUnit:               m.ItemUnit,
-		PrivilegeProgramCode:   m.PrivilegeProgramCode,
-		PrivilegeProgram:       m.PrivilegeProgram,
-	}
-}
-
-func appLists(ms []models.Application) []*entities.Application {
-	ams := []*entities.Application{}
-	for _, m := range ms {
-		ams = append(ams, appList(m))
-	}
-	return ams
 }
