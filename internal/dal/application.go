@@ -10,7 +10,7 @@ import (
 	"komiac/internal/dto"
 	"time"
 
-	uuid "github.com/satori/go.uuid"
+	_uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 )
 
@@ -49,6 +49,10 @@ func (s *Storage) GetList(cxt context.Context, filter entities.ApplicationFilter
 }
 
 func (s *Storage) Create(cxt context.Context, application *entities.Application) (*entities.Application, error) {
+	if _uuid.Equal(application.UUID, _uuid.NullUUID{}.UUID) {
+		return nil, app_errors.BadUUID
+	}
+
 	_, err := s.db.NamedExecContext(cxt, sql.ApplicationCreateSql, models.Application{
 		UUID:                   application.UUID,
 		MedicalOrganizationOID: application.MedicalOrganizationOID,
@@ -71,7 +75,11 @@ func (s *Storage) Create(cxt context.Context, application *entities.Application)
 	return s.Get(cxt, application.UUID)
 }
 
-func (s *Storage) Get(cxt context.Context, uuid uuid.UUID) (*entities.Application, error) {
+func (s *Storage) Get(cxt context.Context, uuid _uuid.UUID) (*entities.Application, error) {
+	if _uuid.Equal(uuid, _uuid.NullUUID{}.UUID) {
+		return nil, app_errors.BadUUID
+	}
+
 	applicationModel := models.Application{}
 
 	err := s.db.NamedGetContext(cxt, &applicationModel, sql.ApplicationGetSql, sql.ApplicationGetParams{
@@ -100,7 +108,7 @@ func (s *Storage) Get(cxt context.Context, uuid uuid.UUID) (*entities.Applicatio
 	}, nil
 }
 
-func (s *Storage) Delete(cxt context.Context, uuid uuid.UUID) error {
+func (s *Storage) Delete(cxt context.Context, uuid _uuid.UUID) error {
 	result, err := s.db.NamedExec(sql.AplicationDeleteSql, sql.ApplicationDeleteParams{
 		UUID:      uuid,
 		DeletedAt: time.Now(),
@@ -117,6 +125,10 @@ func (s *Storage) Delete(cxt context.Context, uuid uuid.UUID) error {
 }
 
 func (s *Storage) Update(cxt context.Context, application *entities.Application) (*entities.Application, error) {
+	if _uuid.Equal(application.UUID, _uuid.NullUUID{}.UUID) {
+		return nil, app_errors.BadUUID
+	}
+
 	modifiedAt := time.Now()
 	result, err := s.db.NamedExecContext(cxt, sql.ApplicationUpdateSql, models.Application{
 		UUID:                   application.UUID,
