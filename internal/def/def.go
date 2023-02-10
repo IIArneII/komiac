@@ -5,13 +5,11 @@ import (
 	"strconv"
 
 	_ "github.com/joho/godotenv/autoload"
-	"github.com/pkg/errors"
-
-	"github.com/powerman/structlog"
+	"github.com/sirupsen/logrus"
 )
 
 var (
-	log = structlog.New()
+	log = logrus.New()
 
 	DBHost = os.Getenv("KOMIAC_DB_HOST")
 	DBPort = intGetenv("KOMIAC_DB_PORT", 5432)
@@ -19,7 +17,7 @@ var (
 	DBPass = os.Getenv("KOMIAC_DB_PASS")
 	DBName = os.Getenv("KOMIAC_DB_NAME")
 
-	Port = intGetenv("KOMIAC_PORT", 5000)
+	Port = intGetenv("KOMIAC_PORT", 80)
 	Host = strGetenv("KOMIAC_HOST", "localhost")
 
 	GooseDir = "./migrations"
@@ -34,7 +32,7 @@ func intGetenv(name string, def int) int {
 
 	i, err := strconv.Atoi(value)
 	if err != nil {
-		log.Err(errors.Errorf("failed to parse %q=%q as int: %v", name, value, err))
+		log.WithError(err).Errorf("failed to parse %q=%q", name, value)
 		return def
 	}
 
