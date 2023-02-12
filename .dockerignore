@@ -1,0 +1,12 @@
+.vscode/
+.idea/
+*.test
+*.out
+*.exe
+bin/
+postgresql-data
+.env
+.env.sample
+.gitignore
+README.md
+tests/
