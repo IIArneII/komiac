@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	log = logrus.New()
+	log = logrus.New().WithField("module", "DTO")
 
 	DBHost = os.Getenv("KOMIAC_DB_HOST")
 	DBPort = intGetenv("KOMIAC_DB_PORT", 5432)

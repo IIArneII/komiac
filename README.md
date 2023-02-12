@@ -21,8 +21,8 @@ go mod download
 
 Build and run the application:
 ```bash
-go build -o ./main ./cmd/main
-./main
+go build -o ./main.exe ./cmd/main
+./main.exe
 ```
 
 ## Docker

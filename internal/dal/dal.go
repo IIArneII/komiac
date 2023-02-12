@@ -7,12 +7,12 @@ import (
 
 type Storage struct {
 	db  *sqlxx.DB
-	log *logrus.Logger
+	log *logrus.Entry
 }
 
 func NewStorage(db *sqlxx.DB) *Storage {
 	return &Storage{
 		db:  db,
-		log: logrus.New(),
+		log: logrus.New().WithField("module", "DAL"),
 	}
 }
