@@ -25,15 +25,19 @@ var (
 	AplicationDeleteSql = `
 	UPDATE applications
 	SET deleted_at=:deleted_at
-	WHERE uuid=:uuid
+	WHERE uuid=:uuid AND deleted_at IS NULL
 	`
 
 	AplicationGetListSql = `
-	SELECT * FROM applications WHERE deleted_at IS NULL 
+	SELECT * FROM applications WHERE deleted_at IS NULL
 	`
 
 	ApplicationGetSql = `
 	SELECT * FROM applications WHERE uuid=:uuid AND deleted_at IS NULL
+	`
+
+	ApplicationGetWithDeletedSql = `
+	SELECT * FROM applications WHERE uuid=:uuid
 	`
 
 	ApplicationCreateSql = `
@@ -42,8 +46,8 @@ var (
 	`
 
 	ApplicationUpdateSql = `
-	UPDATE applications SET (medical_organization_oid, division_oid, year, smnn, mnn, form, dosage, consumer_unit, item_unit, privilege_program_code, privilege_program, modified_at) =
-	(:medical_organization_oid, :division_oid, :year, :smnn, :mnn, :form, :dosage, :consumer_unit, :item_unit, :privilege_program_code, :privilege_program, :modified_at)
+	UPDATE applications SET (medical_organization_oid, division_oid, year, smnn, mnn, form, dosage, consumer_unit, item_unit, privilege_program_code, privilege_program, modified_at, deleted_at) =
+	(:medical_organization_oid, :division_oid, :year, :smnn, :mnn, :form, :dosage, :consumer_unit, :item_unit, :privilege_program_code, :privilege_program, :modified_at, :deleted_at)
 	WHERE uuid=:uuid
 	`
 )

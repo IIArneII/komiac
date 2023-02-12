@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	log = logrus.New()
+	log = logrus.New().WithField("module", "MAIN")
 	cfg struct {
 		gooseDir string
 		db       pqx.Config

@@ -17,7 +17,7 @@ import (
 func (s *Storage) GetList(cxt context.Context, filter entities.ApplicationFilter) ([]*entities.Application, error) {
 	applicationModels := []models.Application{}
 	var filterStrs string
-	namedVars := map[string]interface{}{}
+	namedVars := logrus.Fields{}
 
 	if filter.DivisionOID != nil {
 		filterStrs += "AND division_oid=:DivisionOID "
@@ -35,13 +35,10 @@ func (s *Storage) GetList(cxt context.Context, filter entities.ApplicationFilter
 	err := s.db.NamedSelectContext(cxt, &applicationModels, sql.AplicationGetListSql+filterStrs, namedVars)
 
 	if err == db_sql.ErrNoRows {
-		s.log.WithFields(logrus.Fields{
-			"DivisionOID": filter.DivisionOID,
-			"Year":        filter.Year,
-			"MNN":         filter.MNN,
-		}).Info("Applications not found")
+		s.log.WithFields(namedVars).Info("GetList: applications not found")
 		return []*entities.Application{}, nil
 	} else if err != nil {
+		s.log.WithError(err).WithFields(namedVars).Error("GetList: erorr")
 		return nil, err
 	}
 
@@ -49,8 +46,14 @@ func (s *Storage) GetList(cxt context.Context, filter entities.ApplicationFilter
 }
 
 func (s *Storage) Create(cxt context.Context, application *entities.Application) (*entities.Application, error) {
+	if application == nil {
+		s.log.WithError(app_errors.ErrEntityIsNil).Error("Create: erorr")
+		return nil, app_errors.ErrEntityIsNil
+	}
+
 	if _uuid.Equal(application.UUID, _uuid.NullUUID{}.UUID) {
-		return nil, app_errors.BadUUID
+		s.log.WithError(app_errors.ErrBadUUID).Error("Create: erorr")
+		return nil, app_errors.ErrBadUUID
 	}
 
 	_, err := s.db.NamedExecContext(cxt, sql.ApplicationCreateSql, models.Application{
@@ -69,43 +72,33 @@ func (s *Storage) Create(cxt context.Context, application *entities.Application)
 		CreatedAt:              time.Now(),
 	})
 	if err != nil {
+		s.log.WithError(err).WithField("uuid", application.UUID.String()).Error("Create: erorr")
 		return nil, err
 	}
 
-	return s.Get(cxt, application.UUID)
+	return s.Get(cxt, application.UUID, false)
 }
 
-func (s *Storage) Get(cxt context.Context, uuid _uuid.UUID) (*entities.Application, error) {
-	if _uuid.Equal(uuid, _uuid.NullUUID{}.UUID) {
-		return nil, app_errors.BadUUID
+func (s *Storage) Get(cxt context.Context, uuid _uuid.UUID, withDeleted bool) (*entities.Application, error) {
+	sqlGet := sql.ApplicationGetSql
+	if withDeleted {
+		sqlGet = sql.ApplicationGetWithDeletedSql
 	}
 
 	applicationModel := models.Application{}
 
-	err := s.db.NamedGetContext(cxt, &applicationModel, sql.ApplicationGetSql, sql.ApplicationGetParams{
+	err := s.db.NamedGetContext(cxt, &applicationModel, sqlGet, sql.ApplicationGetParams{
 		UUID: uuid,
 	})
 	if err == db_sql.ErrNoRows {
-		s.log.WithField("uuid", uuid.String()).Info("Application not found")
+		s.log.WithField("uuid", uuid.String()).Info("Get: application not found")
 		return nil, app_errors.ErrNotFound
 	} else if err != nil {
+		s.log.WithError(err).Error("Get: erorr")
 		return nil, err
 	}
 
-	return &entities.Application{
-		UUID:                   applicationModel.UUID,
-		MedicalOrganizationOID: applicationModel.MedicalOrganizationOID,
-		DivisionOID:            applicationModel.DivisionOID,
-		Year:                   applicationModel.Year,
-		SMNN:                   applicationModel.SMNN,
-		MNN:                    applicationModel.MNN,
-		Form:                   applicationModel.Form,
-		Dosage:                 applicationModel.Dosage,
-		ConsumerUnit:           applicationModel.ConsumerUnit,
-		ItemUnit:               applicationModel.ItemUnit,
-		PrivilegeProgramCode:   applicationModel.PrivilegeProgramCode,
-		PrivilegeProgram:       applicationModel.PrivilegeProgram,
-	}, nil
+	return dto.DalToAppApplication(applicationModel), nil
 }
 
 func (s *Storage) Delete(cxt context.Context, uuid _uuid.UUID) error {
@@ -114,10 +107,12 @@ func (s *Storage) Delete(cxt context.Context, uuid _uuid.UUID) error {
 		DeletedAt: time.Now(),
 	})
 	if err != nil {
+		s.log.WithError(err).Error("Get: erorr")
 		return err
 	}
 
 	if count, _ := result.RowsAffected(); count == 0 {
+		s.log.WithField("uuid", uuid.String()).Info("Delete: application not found")
 		return app_errors.ErrNotFound
 	}
 
@@ -125,8 +120,9 @@ func (s *Storage) Delete(cxt context.Context, uuid _uuid.UUID) error {
 }
 
 func (s *Storage) Update(cxt context.Context, application *entities.Application) (*entities.Application, error) {
-	if _uuid.Equal(application.UUID, _uuid.NullUUID{}.UUID) {
-		return nil, app_errors.BadUUID
+	if application == nil {
+		s.log.WithError(app_errors.ErrEntityIsNil).Error("Update: erorr")
+		return nil, app_errors.ErrEntityIsNil
 	}
 
 	modifiedAt := time.Now()
@@ -144,14 +140,17 @@ func (s *Storage) Update(cxt context.Context, application *entities.Application)
 		PrivilegeProgramCode:   application.PrivilegeProgramCode,
 		PrivilegeProgram:       application.PrivilegeProgram,
 		ModifiedAt:             &modifiedAt,
+		DeletedAt:              nil,
 	})
 	if err != nil {
+		s.log.WithError(err).Error("Update: erorr")
 		return nil, err
 	}
 
 	if count, _ := result.RowsAffected(); count == 0 {
+		s.log.WithField("uuid", application.UUID.String()).Info("Update: application not found")
 		return nil, app_errors.ErrNotFound
 	}
 
-	return s.Get(cxt, application.UUID)
+	return s.Get(cxt, application.UUID, false)
 }

@@ -16,8 +16,8 @@ func TestCreate(t *testing.T) {
 
 		cxt := context.Background()
 		_, err := tests.Storage.Create(cxt, app)
-		if err != errors.BadUUID {
-			t.Errorf("Not received error: %s", errors.BadUUID)
+		if err != errors.ErrBadUUID {
+			t.Errorf("Not received error: %s", errors.ErrBadUUID)
 		}
 	})
 
@@ -62,7 +62,7 @@ func TestGet(t *testing.T) {
 			t.Errorf("Error: %s", err.Error())
 		}
 
-		dbApp, err := tests.Storage.Get(cxt, app.UUID)
+		dbApp, err := tests.Storage.Get(cxt, app.UUID, false)
 		if err != nil {
 			t.Errorf("Error: %s", err.Error())
 		}
@@ -75,7 +75,7 @@ func TestGet(t *testing.T) {
 
 	t.Run("Get not existing application", func(t *testing.T) {
 		cxt := context.Background()
-		_, err := tests.Storage.Get(cxt, uuid.NewV4())
+		_, err := tests.Storage.Get(cxt, uuid.NewV4(), false)
 		if err != errors.ErrNotFound {
 			t.Errorf("Not received error: %s", errors.ErrNotFound.Error())
 		}
@@ -83,9 +83,9 @@ func TestGet(t *testing.T) {
 
 	t.Run("Create application by empty uuid", func(t *testing.T) {
 		cxt := context.Background()
-		_, err := tests.Storage.Get(cxt, uuid.NullUUID{}.UUID)
-		if err != errors.BadUUID {
-			t.Errorf("Not received error: %s", errors.BadUUID)
+		_, err := tests.Storage.Get(cxt, uuid.NullUUID{}.UUID, false)
+		if err != errors.ErrBadUUID {
+			t.Errorf("Not received error: %s", errors.ErrBadUUID)
 		}
 	})
 }
@@ -129,8 +129,8 @@ func TestUpdate(t *testing.T) {
 
 		cxt := context.Background()
 		_, err := tests.Storage.Update(cxt, app)
-		if err != errors.BadUUID {
-			t.Errorf("Not received error: %s", errors.BadUUID)
+		if err != errors.ErrBadUUID {
+			t.Errorf("Not received error: %s", errors.ErrBadUUID)
 		}
 	})
 }

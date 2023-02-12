@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"komiac/internal/api/restapi/restapi"
 	"komiac/internal/api/restapi/restapi/operations"
 	"komiac/internal/api/restapi/restapi/operations/application"
@@ -18,14 +17,14 @@ type Config struct {
 }
 
 type service struct {
-	log *logrus.Logger
+	log *logrus.Entry
 	app *app.App
 }
 
 func NewServer(app *app.App, cfg Config) (*restapi.Server, error) {
 	service := &service{
 		app: app,
-		log: logrus.New(),
+		log: logrus.New().WithField("module", "API"),
 	}
 
 	swaggerSpec, err := loads.Embedded(restapi.SwaggerJSON, restapi.FlatSwaggerJSON)
@@ -40,7 +39,7 @@ func NewServer(app *app.App, cfg Config) (*restapi.Server, error) {
 	api.ApplicationDeleteHandler = application.DeleteHandlerFunc(service.ApplicationDelete)
 
 	api.Logger = func(s string, i ...interface{}) {
-		service.log.Info(fmt.Sprintf(s, i...))
+		service.log.Infof(s, i...)
 	}
 
 	server := restapi.NewServer(api)
