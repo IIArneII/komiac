@@ -28,7 +28,7 @@ func (s *Storage) GetList(cxt context.Context, filter entities.ApplicationFilter
 		namedVars["Year"] = filter.Year
 	}
 	if filter.MNN != nil {
-		filterStrs += "AND mnn=:MNN "
+		filterStrs += "AND LOWER(mnn)=LOWER(:MNN) "
 		namedVars["MNN"] = filter.MNN
 	}
 
