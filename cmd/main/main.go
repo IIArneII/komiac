@@ -81,6 +81,8 @@ func migrateDB(db *sql.DB, dir string) error {
 }
 
 func main() {
+	log.Infof("DBName: %s, Host: %s, Port: %d, User: %s, Pass: %s", cfg.db.DBName, cfg.db.Host, cfg.db.Port, cfg.db.User, cfg.db.Pass)
+
 	db, err := connectDB(cfg.db)
 	if err != nil {
 		log.WithError(err).Error("DB is not connected")
