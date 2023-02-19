@@ -22,18 +22,30 @@ var (
 	Host = "localhost"
 
 	GooseDir = "./migrations"
+	EnvFile  = "./.env"
 )
 
 func init() {
-	content, err := ioutil.ReadFile(".env")
+	// Что поделать, если виндовс сервер файлы нормально не читает
+
+	if len(os.Args) == 2 {
+		EnvFile = os.Args[1]
+	}
+
+	if len(os.Args) == 3 {
+		GooseDir = os.Args[2]
+	}
+
+	content, err := ioutil.ReadFile(EnvFile)
 	if err != nil {
-		log.WithError(err).Fatal("Failed to read contents of file '.env'")
+		log.WithError(err).Fatalf("Failed to read contents of file '%s'", EnvFile)
 	}
 
 	lines := strings.Split(strings.ReplaceAll(string(content), " ", ""), "\n")
 
 	for _, l := range lines {
-		l = strings.ReplaceAll(l, "\r", "")
+		l = strings.ReplaceAll(strings.ReplaceAll(l, "\r", ""), string([]byte{0}), "")
+		l = strings.ReplaceAll(l, string([]byte{255}), "")
 		if len(l) >= 3 {
 			if v := strings.Split(l, "="); len(v) == 2 {
 				os.Setenv(v[0], v[1])
