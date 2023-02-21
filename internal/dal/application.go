@@ -3,6 +3,7 @@ package dal
 import (
 	"context"
 	db_sql "database/sql"
+	"errors"
 	"komiac/internal/app/entities"
 	app_errors "komiac/internal/app/errors"
 	"komiac/internal/dal/models"
@@ -19,17 +20,17 @@ func (s *Storage) GetList(cxt context.Context, filter entities.ApplicationFilter
 	var filterStrs string
 	namedVars := logrus.Fields{}
 
-	if filter.DivisionOID != nil {
+	if filter.DivisionOID != nil && filter.Year != nil && filter.MNN != nil {
 		filterStrs += "AND division_oid=:DivisionOID "
 		namedVars["DivisionOID"] = filter.DivisionOID
-	}
-	if filter.Year != nil {
+
 		filterStrs += "AND year=:Year "
 		namedVars["Year"] = filter.Year
-	}
-	if filter.MNN != nil {
+
 		filterStrs += "AND LOWER(mnn)=LOWER(:MNN) "
 		namedVars["MNN"] = filter.MNN
+	} else {
+		return nil, errors.New("the filter is not fully filled")
 	}
 
 	err := s.db.NamedSelectContext(cxt, &applicationModels, sql.AplicationGetListSql+filterStrs, namedVars)
