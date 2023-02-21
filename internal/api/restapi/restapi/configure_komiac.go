@@ -13,7 +13,7 @@ import (
 	"komiac/internal/api/restapi/restapi/operations/application"
 )
 
-//go:generate swagger generate server --target ../../restapi --name Komiac --spec ../../../../swagger.yml --api-package op --principal interface{} --exclude-main --strict-responders
+//go:generate swagger generate server --target ../../restapi --name Komiac --spec ../../../../swagger.yml --principal interface{} --exclude-main --strict-responders
 
 func configureFlags(api *operations.KomiacAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
