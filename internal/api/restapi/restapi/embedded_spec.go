@@ -46,17 +46,20 @@ func init() {
           {
             "type": "string",
             "name": "divisionOID",
-            "in": "query"
+            "in": "query",
+            "required": true
           },
           {
             "type": "integer",
             "name": "year",
-            "in": "query"
+            "in": "query",
+            "required": true
           },
           {
             "type": "string",
             "name": "MNN",
-            "in": "query"
+            "in": "query",
+            "required": true
           }
         ],
         "responses": {
@@ -243,17 +246,20 @@ func init() {
           {
             "type": "string",
             "name": "divisionOID",
-            "in": "query"
+            "in": "query",
+            "required": true
           },
           {
             "type": "integer",
             "name": "year",
-            "in": "query"
+            "in": "query",
+            "required": true
           },
           {
             "type": "string",
             "name": "MNN",
-            "in": "query"
+            "in": "query",
+            "required": true
           }
         ],
         "responses": {

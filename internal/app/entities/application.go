@@ -18,7 +18,7 @@ type Application struct {
 }
 
 type ApplicationFilter struct {
-	DivisionOID *string
-	Year        *int64
-	MNN         *string
+	DivisionOID string
+	Year        int64
+	MNN         string
 }

@@ -36,15 +36,10 @@ func NewApplicationService(repo ApplicationRepository) ApplicationService {
 }
 
 func (svc *ApplicationSvc) GetList(cxt context.Context, filter entities.ApplicationFilter) ([]*entities.Application, error) {
-	fields := logrus.Fields{}
-	if filter.DivisionOID != nil {
-		fields["DivisionOID"] = *filter.DivisionOID
-	}
-	if filter.MNN != nil {
-		fields["MNN"] = *filter.MNN
-	}
-	if filter.Year != nil {
-		fields["Year"] = *filter.Year
+	fields := logrus.Fields{
+		"DivisionOID": filter.DivisionOID,
+		"MNN":         filter.MNN,
+		"Year":        filter.Year,
 	}
 	svc.log.WithFields(fields).Info("GetList")
 

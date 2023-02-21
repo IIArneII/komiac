@@ -15,9 +15,9 @@ import (
 
 // GetListURL generates an URL for the get list operation
 type GetListURL struct {
-	MNN         *string
-	DivisionOID *string
-	Year        *int64
+	MNN         string
+	DivisionOID string
+	Year        int64
 
 	_basePath string
 	// avoid unkeyed usage
@@ -53,26 +53,17 @@ func (o *GetListURL) Build() (*url.URL, error) {
 
 	qs := make(url.Values)
 
-	var mNNQ string
-	if o.MNN != nil {
-		mNNQ = *o.MNN
-	}
+	mNNQ := o.MNN
 	if mNNQ != "" {
 		qs.Set("MNN", mNNQ)
 	}
 
-	var divisionOIDQ string
-	if o.DivisionOID != nil {
-		divisionOIDQ = *o.DivisionOID
-	}
+	divisionOIDQ := o.DivisionOID
 	if divisionOIDQ != "" {
 		qs.Set("divisionOID", divisionOIDQ)
 	}
 
-	var yearQ string
-	if o.Year != nil {
-		yearQ = swag.FormatInt64(*o.Year)
-	}
+	yearQ := swag.FormatInt64(o.Year)
 	if yearQ != "" {
 		qs.Set("year", yearQ)
 	}

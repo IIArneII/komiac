@@ -16,23 +16,13 @@ import (
 
 func (s *Storage) GetList(cxt context.Context, filter entities.ApplicationFilter) ([]*entities.Application, error) {
 	applicationModels := []models.Application{}
-	var filterStrs string
-	namedVars := logrus.Fields{}
-
-	if filter.DivisionOID != nil {
-		filterStrs += "AND division_oid=:DivisionOID "
-		namedVars["DivisionOID"] = filter.DivisionOID
-	}
-	if filter.Year != nil {
-		filterStrs += "AND year=:Year "
-		namedVars["Year"] = filter.Year
-	}
-	if filter.MNN != nil {
-		filterStrs += "AND LOWER(mnn)=LOWER(:MNN) "
-		namedVars["MNN"] = filter.MNN
+	namedVars := logrus.Fields{
+		"division_oid": filter.DivisionOID,
+		"year":         filter.Year,
+		"mnn":          filter.MNN,
 	}
 
-	err := s.db.NamedSelectContext(cxt, &applicationModels, sql.AplicationGetListSql+filterStrs, namedVars)
+	err := s.db.NamedSelectContext(cxt, &applicationModels, sql.AplicationGetListSql, namedVars)
 
 	if err == db_sql.ErrNoRows {
 		s.log.WithFields(namedVars).Info("GetList: applications not found")
