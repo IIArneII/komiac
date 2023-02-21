@@ -46,6 +46,7 @@ func init() {
 	for _, l := range lines {
 		l = strings.ReplaceAll(strings.ReplaceAll(l, "\r", ""), string([]byte{0}), "")
 		l = strings.ReplaceAll(l, string([]byte{255}), "")
+		l = strings.ReplaceAll(l, string([]byte{254}), "")
 		if len(l) >= 3 {
 			if v := strings.Split(l, "="); len(v) == 2 {
 				os.Setenv(v[0], v[1])
