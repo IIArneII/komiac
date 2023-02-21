@@ -9,17 +9,17 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 
-	"komiac/internal/api/restapi/restapi/op"
-	"komiac/internal/api/restapi/restapi/op/application"
+	"komiac/internal/api/restapi/restapi/operations"
+	"komiac/internal/api/restapi/restapi/operations/application"
 )
 
 //go:generate swagger generate server --target ../../restapi --name Komiac --spec ../../../../swagger.yml --api-package op --principal interface{} --exclude-main --strict-responders
 
-func configureFlags(api *op.KomiacAPI) {
+func configureFlags(api *operations.KomiacAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
 
-func configureAPI(api *op.KomiacAPI) http.Handler {
+func configureAPI(api *operations.KomiacAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 
