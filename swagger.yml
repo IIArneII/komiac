@@ -98,12 +98,15 @@ paths:
         - name: divisionOID
           in: query
           type: string
+          required: true
         - name: year
           in: query
           type: integer
+          required: true
         - name: MNN
           in: query
           type: string
+          required: true
       description: "Get applications by filters"
       responses:
         200:
