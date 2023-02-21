@@ -13,6 +13,7 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // NewGetListParams creates a new GetListParams object
@@ -33,17 +34,20 @@ type GetListParams struct {
 	HTTPRequest *http.Request `json:"-"`
 
 	/*
+	  Required: true
 	  In: query
 	*/
-	MNN *string
+	MNN string
 	/*
+	  Required: true
 	  In: query
 	*/
-	DivisionOID *string
+	DivisionOID string
 	/*
+	  Required: true
 	  In: query
 	*/
-	Year *int64
+	Year int64
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -79,59 +83,68 @@ func (o *GetListParams) BindRequest(r *http.Request, route *middleware.MatchedRo
 
 // bindMNN binds and validates parameter MNN from query.
 func (o *GetListParams) bindMNN(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	if !hasKey {
+		return errors.Required("MNN", "query", rawData)
+	}
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
 	}
 
-	// Required: false
+	// Required: true
 	// AllowEmptyValue: false
 
-	if raw == "" { // empty values pass all other validations
-		return nil
+	if err := validate.RequiredString("MNN", "query", raw); err != nil {
+		return err
 	}
-	o.MNN = &raw
+	o.MNN = raw
 
 	return nil
 }
 
 // bindDivisionOID binds and validates parameter DivisionOID from query.
 func (o *GetListParams) bindDivisionOID(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	if !hasKey {
+		return errors.Required("divisionOID", "query", rawData)
+	}
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
 	}
 
-	// Required: false
+	// Required: true
 	// AllowEmptyValue: false
 
-	if raw == "" { // empty values pass all other validations
-		return nil
+	if err := validate.RequiredString("divisionOID", "query", raw); err != nil {
+		return err
 	}
-	o.DivisionOID = &raw
+	o.DivisionOID = raw
 
 	return nil
 }
 
 // bindYear binds and validates parameter Year from query.
 func (o *GetListParams) bindYear(rawData []string, hasKey bool, formats strfmt.Registry) error {
+	if !hasKey {
+		return errors.Required("year", "query", rawData)
+	}
 	var raw string
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
 	}
 
-	// Required: false
+	// Required: true
 	// AllowEmptyValue: false
 
-	if raw == "" { // empty values pass all other validations
-		return nil
+	if err := validate.RequiredString("year", "query", raw); err != nil {
+		return err
 	}
 
 	value, err := swag.ConvertInt64(raw)
 	if err != nil {
 		return errors.InvalidType("year", "query", "int64", raw)
 	}
-	o.Year = &value
+	o.Year = value
 
 	return nil
 }
